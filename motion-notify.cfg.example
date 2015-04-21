@@ -1,42 +1,30 @@
 [zone]
 region = Kitchen
+# Delete the local video file after the upload
+cleanup = True
+# Force on between these hours (ignores presence info)
+zone_guard_start = 1
+zone_guard_end = 7
 
 [pushbullet]
+enabled = True
+# Obtain your API key from: https://www.pushbullet.com/account
 apikey = xxxxx
-
-# Subject line for email
-subject = {region} motion detected
-
+# Subject line for notification message
+subject = {} motion detected
 # First line of notification message
-message = Video uploaded
-event_started_message = An event has been detected and is being captured.
-# The link to the Google Drive folder that will be included in the email at the start of the event. This is only used in the email - it doesn't affect the upload
-google_drive_folder_link = https://drive.google.com/a/xxxxxxxxxxx.com/folderview?id=xxxxxxxxxxxxxxxxx&usp=sharing
+message = Video uploaded for event in {}
+event_message = {} surveilance is being captured.
+
 
 [dropbox]
 # Folder (or collection) in Docs where you want the videos to go
-folder = CCTV
-folder_link = https://www.dropbox.com/home/cctv
-
-[options]
-# Delete the local video file after the upload
-delete-files = true
-# Send an email after the upload
-send-notification = true
-
-[activate-system]
-# Force on between these hours, i.e, ignore presence info
-force_on_start = 1
-force_on_end = 7
+folder = cctv
+folder_link = https://www.dropbox.com/home/Apps/motion-notify/cctv/
+access_token = xxxxx
 
 [LAN]
-# Network to monitor (used by MAC address detection)
-network = 10.0.10.0:255.255.255.0
-
-# MAC addresses (comma separated) of the devices to detect home presence and disable emails (e.g., phones) - these will be ignored if you specify IP addresses below
-presence_macs = XX:XX:XX:XX:XX,YY:YY:YY:YY:YY
-
-#Space separated list of IP addresses for detection. If these are present on the network the system is inactive. Setup a static IP on your router to keep your IP constant
-#The MAC address above will be ignored if you configure an IP here 
-ip_addresses = 192.168.1.100,192.168.1.101,192.168.3.102
+enabled = True
+#comma separated list of IP addresses for detection.
+ip_addresses = 10.0.10.119
 
