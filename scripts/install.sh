@@ -10,8 +10,13 @@ if [ -z $pipinstalled ]; then
     exit 0
 fi
 
-echo "Installing predependencies for: Dropbox, Pushbullet"
-sudo pip install -r requirements.txt -q
+dropboxlib=$(pip list | grep dropbox)
+pblib=$(pip list | grep pushbullet)
+
+if [[ -z $dropboxlib || -z $pblib ]]; then
+  echo "Installing predependencies for: Dropbox, Pushbullet"
+  sudo pip install -r requirements.txt -q
+fi
 
 if [ -f motion-notify.py ]; then
     echo "Copying motion-notify to /usr/local/bin/mnotify"
