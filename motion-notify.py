@@ -95,7 +95,7 @@ class MotionNotify:
         self.message = config.get('pushbullet', 'message')
         self.event_message = config.get('pushbullet', 'event_message')
         if self.pushbullet_enabled and notify:
-           self._create_pushbullet_client()
+            self._create_pushbullet_client()
 
         # [dropbox]
         # Folder in Dropbox where you want the videos to go
@@ -108,13 +108,12 @@ class MotionNotify:
         self.network = None
         self.ip_addresses = None
 
-        #[LAN]
+        # [LAN]
         try:
-            #Space separated list of IP addresses
+            # Space separated list of IP addresses
             self.ip_addresses = config.get('LAN', 'ip_addresses').split(',')
         except ConfigParser.NoSectionError, ConfigParser.NoOptionError:
             pass
-
 
     def _create_dropbox_client(self):
         ''' Allocate a DropBox client for re-use '''
@@ -124,9 +123,9 @@ class MotionNotify:
     def _upload_dropbox_file(self, filepath):
         ''' Upload any file passed to this method '''
         filename = filepath.split('/')[-1]
-        dropbox_file = "/{}/{}".format(self.folder,filename)
+        dropbox_file = "/{}/{}".format(self.folder, filename)
         with open(filepath, 'rb') as f:
-           response = self.dropbox.put_file(dropbox_file, f)
+            response = self.dropbox.put_file(dropbox_file, f)
         return response
 
     def _create_pushbullet_client(self):
@@ -141,7 +140,7 @@ class MotionNotify:
                                   msg.format(self.region))
 
     def _system_active(self):
-        if self.zone_guard_start and self.zone_guard_end and self._in_guard_window():
+        if self._in_guard_window():
             log.info('In guard window - sending notifications')
             return True
         elif self._system_active_ip_based():
@@ -163,8 +162,9 @@ class MotionNotify:
         for address in addresses:
             test_string = 'bytes from'
             results = subprocess.Popen(['ping', '-c1', address],
-                                        stdout=subprocess.PIPE,
-                                        stderr=subprocess.STDOUT).stdout.readlines()
+                                       stdout=subprocess.PIPE,
+                                       stderr=subprocess.STDOUT
+                                       ).stdout.readlines()
             for result in results:
                 if test_string in result:
                     log.info('IP detected - someone is home')
@@ -174,8 +174,9 @@ class MotionNotify:
 
     def upload_media(self, media_file_path, notify):
         if self._system_active():
-            link = self._upload_dropbox_file(media_file_path)
-            self._push_notice("{} - view at {}".format(self.message, self.folder_link))
+            self._upload_dropbox_file(media_file_path)
+            self._push_notice("{} - view at {}".format(self.message,
+                                                       self.folder_link))
 
         if self.cleanup:
             log.info("Deleting: %s", media_file_path)
@@ -184,22 +185,23 @@ class MotionNotify:
     def send_start_event(self, notify):
         """Send an email showing that the event has started"""
         if self._system_active():
-            msg = "{} - view at {}".format(self.event_message, self.folder_link)
+            msg = "{} - view at {}".format(self.event_message,
+                                           self.folder_link)
             self._push_notice(msg)
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(prog='MNotify - A notifier app for Motion',
+    parser = argparse.ArgumentParser(prog='MNotify - A notifier for Motion',
                                      description='Based on the Motion Notifier'
                                      ' scripts developed by Andrew Dean.')
     parser.add_argument('--media', '-m',
-                         help="Media file path to upload")
+                        help="Media file path to upload")
     parser.add_argument('--config', '-c',
                         help="Specify configuration file to parse",
                         default="/etc/motion/notify.conf")
     parser.add_argument('--notify', '-n',
-                         help="Enable push-bullet notifications",
-                         action="store_true", default=True)
+                        help="Enable push-bullet notifications",
+                        action="store_true")
 
     args = parser.parse_args()
 
@@ -216,4 +218,5 @@ if __name__ == '__main__':
         log.critical('Video file does not exist [{}]'.format(args.media))
         sys.exit(1)
 
-    MotionNotify(args.config, args.notify).upload_media(args.media, args.notify)
+    MotionNotify(args.config, args.notify).upload_media(args.media,
+                                                        args.notify)
