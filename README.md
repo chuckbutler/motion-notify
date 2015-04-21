@@ -5,9 +5,9 @@ To enable, run `make install`
 
 You will also need to tweak the following settings in `/etc/motion/motion.conf`
 
-    on_picture_save mnotify -m %f -n 0
-    on_movie_end mnotify -m %f -n 1
-    on_event_start mnotify -m None -n 1
+    on_picture_save mnotify -m %f
+    on_movie_end mnotify -m %f -n
+    on_event_start mnotify -n
 
 
 
@@ -57,18 +57,21 @@ Log into Pushbullet and copy out your `api_key` from your
 
 ### Generic setup
 
-Edit the config file and enter the following:
+#### To Install
+
+There's a WIP installer script under scripts/install.sh this is executeable
+by running: `make install` from the project root.
+
+#### Post Install Configuration
+
+Edit the config file /etc/motion/motion-notify.cfg and enter the following:
 
 - The name of the folder you created eg. CCTV
 - The hours that you always want to recieve email alerts even when you're home
 - Enter IP addresses which will be active when you're at home
+- plug in API credentials obtained above
+- Set Zone/Region info (handy when using a multi-node security system)
 
-#### This will be taken care of by the setup target in the future
-Create the entry in the Motion conf file to trigger the motion-notify script
-when there is an alert
-
-sudo cat /etc/motion-notify/create-motion-conf-entries.txt >> /etc/motion/motion.conf
-rm /etc/motion-notify/create-motion-conf-entries.txt
 
 ### Experiment, and file bugs if you find any!
 Motion will now send alerts to you when you're devices aren't present on the
