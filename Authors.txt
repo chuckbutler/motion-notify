@@ -1,0 +1,3 @@
+Prior Contributors:
+Andrew Dean   (https://github.com/amdean/motion-notify)
+Jeremy Blythe (http://jeremyblythe.blogspot.com)
