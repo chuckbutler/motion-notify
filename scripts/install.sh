@@ -54,9 +54,9 @@ fi
 if [[ $doit == 'y' || $doit == 'Y' ]]; then
     set -x
     sudo cp /etc/motion/motion.conf /etc/motion/motion.conf.orig
-    sed -i .bak 's/; on_event_start value/on_event_start /usr/local/bin/mnotify/ -n' /etc/motion/motion.conf
-    sed -i .bak 's/; on_picture_save value/on_picture_save /usr/local/bin/mnotify -m %f' /etc/motion/motion.conf
-    sed -i .bak 's/; on_movie_end value/on_movie_end /usr/local/bin/mnotify -m %f -n' /etc/motion/motion.conf
+    sudo sed -i.bak 's/; on_event_start value/on_event_start \/usr\/local\/bin\/mnotify -n/g' /etc/motion/motion.conf
+    sudo sed -i.bak 's/; on_picture_save value/on_picture_save \/usr\/local\/bin/mnotify -m %f/g' /etc/motion/motion.conf
+    sudo sed -i.bak 's/; on_movie_end value/on_movie_end \/usr\/local\/bin\/mnotify -m %f -n/g' /etc/motion/motion.conf
 fi
 
 set +x
