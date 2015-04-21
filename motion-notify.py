@@ -105,19 +105,10 @@ class MotionNotify:
         self._create_dropbox_client()
 
         # set defaults for LAN config - this is shakey at best
-        self.presenceMacs = []
         self.network = None
         self.ip_addresses = None
 
         #[LAN]
-        try:
-            # MAC addresses (comma separated) - override with ip_addresses
-            self.presenceMacs = config.get('LAN', 'presence_macs').split(',')
-            # Network to monitor (used by MAC address detection)
-            self.network = config.get('LAN', 'network')
-        except ConfigParser.NoSectionError, ConfigParser.NoOptionError:
-            pass
-
         try:
             #Space separated list of IP addresses
             self.ip_addresses = config.get('LAN', 'ip_addresses').split(',')
@@ -146,7 +137,6 @@ class MotionNotify:
         ''' Pushes a notice via pushbullet '''
         if not self.pushbullet:
             return
-        import ipdb; ipdb.set_trace()
         self.pushbullet.push_note(self.subject.format(self.region),
                                   msg.format(self.region))
 
@@ -191,11 +181,10 @@ class MotionNotify:
             log.info("Deleting: %s", media_file_path)
             os.remove(media_file_path)
 
-    def send_start_event_email(self, notify):
+    def send_start_event(self, notify):
         """Send an email showing that the event has started"""
         if self._system_active():
-            msg = self.event_started_message
-            msg += '\n\n' + self.folder_link
+            msg = "{} - view at {}".format(self.event_message, self.folder_link)
             self._push_notice(msg)
 
 
@@ -204,7 +193,7 @@ if __name__ == '__main__':
                                      description='Based on the Motion Notifier'
                                      ' scripts developed by Andrew Dean.')
     parser.add_argument('--media', '-m',
-                         help="Media file path to upload", default='')
+                         help="Media file path to upload")
     parser.add_argument('--config', '-c',
                         help="Specify configuration file to parse",
                         default="/etc/motion/notify.conf")
@@ -218,13 +207,13 @@ if __name__ == '__main__':
         log.critical('Config file does not exist [{}]'.format(args.config))
         sys.exit(1)
 
-    if args.media == 'None':
-        MotionNotify(args.config).send_start_event_email(notify)
-        exit('Start event triggered')
+    if not args.media:
+        MotionNotify(args.config, args.notify).send_start_event(args.notify)
+        log.info('Start event triggered')
+        exit(0)
 
     if not os.path.exists(args.media):
         log.critical('Video file does not exist [{}]'.format(args.media))
         sys.exit(1)
 
     MotionNotify(args.config, args.notify).upload_media(args.media, args.notify)
-
