@@ -39,7 +39,7 @@ fi
 
 if [ -f config/motion-notify.cfg.example ]; then
     echo "Copying config/motion-notify.cfg.example to /etc/motion/motion-notify.cfg"
-    cp config/motion-notify.cfg.example /etc/motion/motion-notify.cfg
+    sudo cp config/motion-notify.cfg.example /etc/motion/motion-notify.cfg
 fi
 
 
@@ -53,6 +53,7 @@ fi
 
 if [[ $doit == 'y' || $doit == 'Y' ]]; then
     set -x
+    sudo cp /etc/motion/motion.cfg /etc/motion/motion.cfg.orig
     sed -i .bak 's/; on_event_start value/on_event_start /usr/local/bin/mnotify/ -n' /etc/motion/motion.conf
     sed -i .bak 's/; on_picture_save value/on_picture_save /usr/local/bin/mnotify -m %f' /etc/motion/motion.conf
     sed -i .bak 's/; on_movie_end value/on_movie_end /usr/local/bin/mnotify -m %f -n' /etc/motion/motion.conf
